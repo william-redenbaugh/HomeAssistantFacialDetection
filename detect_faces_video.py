@@ -15,7 +15,7 @@ vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
 # setup our requests to the HASS server 
-ip_addr = "192.168.1.53:8123"
+ip_addr = 'https://192.168.1.53:8123'
 api_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI2NDNkZWM0ZGVmNWM0M2QxOTIyMThmMDk3MjYwNzhmZCIsImlhdCI6MTY1NDMxODgyOCwiZXhwIjoxOTY5Njc4ODI4fQ._VV6Lgv4WPQVoZ1MUTyArs6KC305wUTAMoC2aobDwN8"
 # Assigns the Client object to a variable and checks if it's running.
 print("[INFO] starting up homeassistant client")
