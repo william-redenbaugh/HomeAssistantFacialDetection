@@ -1,22 +1,27 @@
-# USAGE
-# python detect_faces_video.py 
-
-# import the necessary packages
 from imutils.video import VideoStream
 import numpy as np
 import imutils
 import time
 import cv2
+from homeassistant_api import Client, State
 
 # load our serialized model from disk
 print("[INFO] loading model...")
 net = cv2.dnn.readNetFromCaffe('deploy.prototxt.txt', 'res10_300x300_ssd_iter_140000.caffemodel')
 
 # initialize the video stream and allow the cammera sensor to warmup
-print("[INFO] starting video stream...")
+print("[INFO] starting webcam stream...")
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
+# setup our requests to the HASS server 
+ip_addr = "192.168.1.53:8123"
+api_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI2NDNkZWM0ZGVmNWM0M2QxOTIyMThmMDk3MjYwNzhmZCIsImlhdCI6MTY1NDMxODgyOCwiZXhwIjoxOTY5Njc4ODI4fQ._VV6Lgv4WPQVoZ1MUTyArs6KC305wUTAMoC2aobDwN8"
+# Assigns the Client object to a variable and checks if it's running.
+print("[INFO] starting up homeassistant client")
+client = Client(ip_addr, api_token)
+data = client.get_entities()
+print(data)
 # loop over the frames from the video stream
 while True:
 	# grab the frame from the threaded video stream and resize it
@@ -34,6 +39,7 @@ while True:
 	net.setInput(blob)
 	detections = net.forward()
 
+	num_faces = 0
 	# loop over the detections
 	for i in range(0, detections.shape[2]):
 		# extract the confidence (i.e., probability) associated with the
@@ -58,15 +64,16 @@ while True:
 			(0, 0, 255), 2)
 		cv2.putText(frame, text, (startX, y),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+		num_faces = num_faces + 1
 
-	# show the output frame
-	cv2.imshow("Frame", frame)
+	print("Num faces:", num_faces)
+	#num_faces_entity = client.get_entity(entity_id='counter.living_room_face_count')
+	#num_faces_entity.set_state(State(state = str(num_faces)))
 	key = cv2.waitKey(1) & 0xFF
+	time.sleep(1)
  
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
 
-# do a bit of cleanup
-cv2.destroyAllWindows()
 vs.stop()
