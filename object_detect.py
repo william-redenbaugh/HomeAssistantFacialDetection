@@ -61,7 +61,7 @@ def capture_motion():
     global MIN_SIZE_FOR_MOVEMENT, MOVEMENT_DETECTED_PERSISTENCE, FRAMES_TO_PERSIST
 
     # Create capture object
-    cap = cv2.VideoCapture(5) # Flush the stream
+    cap = cv2.VideoCapture(1) # Flush the stream
     cap.release()
     cap = cv2.VideoCapture(0) # Then start the webcam
 
@@ -76,7 +76,6 @@ def capture_motion():
 
     # LOOP!
     while True:
-
         # Set transient motion detected as false
         transient_movement_flag = False
         
@@ -162,7 +161,6 @@ def capture_motion():
 
         # Splice the two video frames together to make one long horizontal one
         cv2.imshow("frame", np.hstack((frame_delta, frame)))
-
 
         # Interrupt trigger by pressing q to quit the open CV program
         ch = cv2.waitKey(1)
